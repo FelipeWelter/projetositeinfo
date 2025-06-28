@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Serviços</title>
+</head>
+<body>
+  <h1>Serviços Oferecidos</h1>
+  <nav>
+    <a href="/">Início</a> |
+    <a href="/services">Serviços</a> |
+    <a href="/products">Produtos</a> |
+    <a href="/news">Notícias</a> |
+    <a href="/contact">Contato</a>
+  </nav>
+  <hr>
+  
+  {% if servicos %}
+    <ul>
+      {% for servico in servicos %}
+        <li>
+          <h3>{{ servico.titulo }}</h3>
+          <p>{{ servico.descricao }}</p>
+          <small>Criado em {{ servico.data_criacao.strftime('%d/%m/%Y %H:%M') }}</small>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>Nenhum serviço cadastrado ainda.</p>
+  {% endif %}
+</body>
+</html>
