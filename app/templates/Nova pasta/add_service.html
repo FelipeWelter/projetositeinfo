@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Serviço</title>
+</head>
+<body>
+  <h1>Adicionar Novo Serviço</h1>
+  <nav>
+    <a href="/">Início</a> |
+    <a href="/services">Serviços</a> |
+    <a href="/add-service">Novo Serviço</a>
+  </nav>
+  <hr>
+
+  <form method="POST">
+    {{ form.hidden_tag() }}
+    
+    <p>
+      {{ form.titulo.label }}<br>
+      {{ form.titulo(size=50) }}<br>
+      {% for error in form.titulo.errors %}
+        <span style="color: red;">{{ error }}</span>
+      {% endfor %}
+    </p>
+
+    <p>
+      {{ form.descricao.label }}<br>
+      {{ form.descricao(rows=5, cols=50) }}<br>
+      {% for error in form.descricao.errors %}
+        <span style="color: red;">{{ error }}</span>
+      {% endfor %}
+    </p>
+
+    <p>{{ form.submit() }}</p>
+  </form>
+</body>
+</html>

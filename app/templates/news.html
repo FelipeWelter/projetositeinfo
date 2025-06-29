@@ -1,0 +1,16 @@
+<h1>Notícias</h1>
+<a href="/">Início</a> | <a href="/add-news">Nova Notícia</a>
+<hr>
+
+{% if noticias %}
+  {% for noticia in noticias %}
+    <article>
+      <h2>{{ noticia.titulo }}</h2>
+      <p><em>{{ noticia.resumo }}</em></p>
+      <small>Publicado em {{ noticia.data_publicacao.strftime('%d/%m/%Y %H:%M') }}</small>
+      <hr>
+    </article>
+  {% endfor %}
+{% else %}
+  <p>Nenhuma notícia publicada ainda.</p>
+{% endif %}

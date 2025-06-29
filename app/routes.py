@@ -1,11 +1,7 @@
-from app.models import Produto
-from app.forms import ProdutoForm
-from flask import redirect, url_for, flash
-from .forms import ServicoForm
-from .models import Servico
-from flask import Blueprint, render_template
-from .models import Servico  # importa o modelo
+from flask import Blueprint, render_template, redirect, url_for, flash
 from . import db
+from app.models import Produto, Servico, Noticia
+from app.forms import ProdutoForm, ServicoForm, NoticiaForm
 
 main = Blueprint('main', __name__)
 
@@ -17,12 +13,7 @@ def home():
 def services():
     servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
     return render_template('services.html', servicos=servicos)
-@main.route('/news')
-def news():
-    return render_template('news.html')
-@main.route('/contact')
-def contact():
-    return render_template('contact.html')
+
 @main.route('/add-service', methods=['GET', 'POST'])
 def add_service():
     form = ServicoForm()
@@ -33,10 +24,12 @@ def add_service():
         flash('Serviço cadastrado com sucesso!', 'success')
         return redirect(url_for('main.services'))
     return render_template('add_service.html', form=form)
+
 @main.route('/products')
 def products():
     produtos = Produto.query.order_by(Produto.data_cadastro.desc()).all()
     return render_template('products.html', produtos=produtos)
+
 @main.route('/add-product', methods=['GET', 'POST'])
 def add_product():
     form = ProdutoForm()
@@ -51,6 +44,30 @@ def add_product():
         flash('Produto cadastrado com sucesso!', 'success')
         return redirect(url_for('main.products'))
     return render_template('add_product.html', form=form)
+
+@main.route('/news')
+def news():
+    noticias = Noticia.query.order_by(Noticia.data_publicacao.desc()).all()
+    return render_template('news.html', noticias=noticias)
+
+@main.route('/add-news', methods=['GET', 'POST'])
+def add_news():
+    form = NoticiaForm()
+    if form.validate_on_submit():
+        noticia = Noticia(
+            titulo=form.titulo.data,
+            resumo=form.resumo.data,
+            conteudo=form.conteudo.data
+        )
+        db.session.add(noticia)
+        db.session.commit()
+        flash('Notícia publicada com sucesso!', 'success')
+        return redirect(url_for('main.news'))
+    return render_template('add_news.html', form=form)
+
+@main.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 
 

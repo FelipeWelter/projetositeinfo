@@ -1,0 +1,24 @@
+<h1>Nova Notícia</h1>
+<a href="/">Início</a> | <a href="/news">Ver Notícias</a>
+<hr>
+
+<form method="POST">
+  {{ form.hidden_tag() }}
+
+  <p>
+    {{ form.titulo.label }}<br>
+    {{ form.titulo(size=50) }}
+  </p>
+
+  <p>
+    {{ form.resumo.label }}<br>
+    {{ form.resumo(size=70) }}
+  </p>
+
+  <p>
+    {{ form.conteudo.label }}<br>
+    {{ form.conteudo(rows=8, cols=70) }}
+  </p>
+
+  <p>{{ form.submit() }}</p>
+</form>
