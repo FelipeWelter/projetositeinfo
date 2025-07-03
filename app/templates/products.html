@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Produtos</title>
@@ -9,9 +10,11 @@
       cursor: pointer;
       transition: transform 0.2s ease-in-out;
     }
+
     .produto-img:hover {
       transform: scale(1.05);
     }
+
     .modal {
       display: none;
       position: fixed;
@@ -21,13 +24,15 @@
       width: 100%;
       height: 100%;
       overflow: auto;
-      background-color: rgba(0,0,0,0.8);
+      background-color: rgba(0, 0, 0, 0.8);
     }
+
     .modal-content {
       margin: 10% auto;
       display: block;
       max-width: 90%;
     }
+
     .close {
       position: absolute;
       top: 20px;
@@ -39,6 +44,7 @@
     }
   </style>
 </head>
+
 <body>
   <header>
     <h1>Produtos</h1>
@@ -57,12 +63,15 @@
         <strong>{{ produto.nome }}</strong> - {{ produto.descricao }} (R$ {{ produto.preco }})
         {% if produto.imagem %}
         <div>
-          <img class="produto-img" src="{{ url_for('static', filename='uploads/' + produto.imagem) }}" alt="{{ produto.nome }}" width="150" onclick="openModal('{{ url_for('static', filename='uploads/' + produto.imagem) }}')">
+          <img class="produto-img" src="{{ url_for('static', filename='uploads/' + produto.imagem) }}"
+            alt="{{ produto.nome }}" width="150"
+            onclick="openModal('{{ url_for('static', filename='uploads/' + produto.imagem) }}')">
         </div>
         {% endif %}
         <div>
           <a href="{{ url_for('main.edit_product', id=produto.id) }}">Editar</a> |
-          <a href="{{ url_for('main.delete_product', id=produto.id) }}" onclick="return confirm('Deseja excluir este produto?')">Remover</a>
+          <a href="{{ url_for('main.delete_product', id=produto.id) }}"
+            onclick="return confirm('Deseja excluir este produto?')">Remover</a>
         </div>
       </li>
       {% endfor %}
@@ -88,4 +97,5 @@
     }
   </script>
 </body>
+
 </html>
