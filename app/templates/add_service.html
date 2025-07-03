@@ -1,38 +1,36 @@
 <!DOCTYPE html>
 <html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
   <title>Adicionar Serviço</title>
+  {% include 'style.html' %}
 </head>
+
 <body>
-  <h1>Adicionar Novo Serviço</h1>
+  <header>
+    <h1>Adicionar Serviço</h1>
+  </header>
   <nav>
-    <a href="/">Início</a> |
-    <a href="/services">Serviços</a> |
-    <a href="/add-service">Novo Serviço</a>
+    <a href="{{ url_for('main.home') }}">Início</a>
+    <a href="{{ url_for('main.services') }}">Serviços</a>
+    <a href="{{ url_for('main.products') }}">Produtos</a>
+    <a href="{{ url_for('main.news') }}">Notícias</a>
+    <a href="{{ url_for('main.contact') }}">Contato</a>
   </nav>
-  <hr>
-
-  <form method="POST">
-    {{ form.hidden_tag() }}
-    
-    <p>
+  <div class="container">
+    <form method="POST">
+      {{ form.hidden_tag() }}
       {{ form.titulo.label }}<br>
-      {{ form.titulo(size=50) }}<br>
-      {% for error in form.titulo.errors %}
-        <span style="color: red;">{{ error }}</span>
-      {% endfor %}
-    </p>
-
-    <p>
+      {{ form.titulo(size=32) }}<br>
       {{ form.descricao.label }}<br>
-      {{ form.descricao(rows=5, cols=50) }}<br>
-      {% for error in form.descricao.errors %}
-        <span style="color: red;">{{ error }}</span>
-      {% endfor %}
-    </p>
-
-    <p>{{ form.submit() }}</p>
-  </form>
+      {{ form.descricao(rows=4) }}<br>
+      {{ form.submit() }}
+    </form>
+  </div>
+  <footer>
+    <p>&copy; 2025 Felipe Welter</p>
+  </footer>
 </body>
+
 </html>

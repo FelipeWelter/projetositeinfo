@@ -1,24 +1,109 @@
-<h1>Nova Notícia</h1>
-<a href="/">Início</a> | <a href="/news">Ver Notícias</a>
-<hr>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-<form method="POST">
-  {{ form.hidden_tag() }}
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Notícia</title>
+  <style>
+    body {
+      background-color: #f4f4f4;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
 
-  <p>
-    {{ form.titulo.label }}<br>
-    {{ form.titulo(size=50) }}
-  </p>
+    header,
+    footer {
+      background-color: #222;
+      color: #fff;
+      text-align: center;
+      padding: 15px;
+    }
 
-  <p>
-    {{ form.resumo.label }}<br>
-    {{ form.resumo(size=70) }}
-  </p>
+    nav {
+      background-color: #333;
+      padding: 10px;
+      text-align: center;
+    }
 
-  <p>
-    {{ form.conteudo.label }}<br>
-    {{ form.conteudo(rows=8, cols=70) }}
-  </p>
+    nav a {
+      color: #fff;
+      margin: 0 15px;
+      text-decoration: none;
+      font-weight: bold;
+    }
 
-  <p>{{ form.submit() }}</p>
-</form>
+    nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      padding: 20px;
+    }
+
+    h1,
+    h2 {
+      color: #333;
+    }
+
+    form {
+      max-width: 600px;
+      margin: auto;
+    }
+
+    input[type="text"],
+    textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+
+    input[type="submit"],
+    button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    input[type="submit"]:hover,
+    button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+
+</head>
+
+<body>
+  <header>
+    <h1>Adicionar Notícia</h1>
+  </header>
+  <nav>
+    <a href="{{ url_for('main.home') }}">Início</a>
+    <a href="{{ url_for('main.services') }}">Serviços</a>
+    <a href="{{ url_for('main.products') }}">Produtos</a>
+    <a href="{{ url_for('main.news') }}">Notícias</a>
+    <a href="{{ url_for('main.contact') }}">Contato</a>
+  </nav>
+  <div class="container">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      {{ form.titulo.label }}<br>
+      {{ form.titulo(size=32) }}<br>
+      {{ form.resumo.label }}<br>
+      {{ form.resumo(rows=3) }}<br>
+      {{ form.conteudo.label }}<br>
+      {{ form.conteudo(rows=5) }}<br>
+      {{ form.submit() }}
+    </form>
+  </div>
+  <footer>
+    <p>&copy; 2025 Felipe Welter</p>
+  </footer>
+</body>
+
+</html>

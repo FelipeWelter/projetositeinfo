@@ -1,17 +1,33 @@
-<h1>Produtos</h1>
-<a href="/">Início</a> | <a href="/add-product">Novo Produto</a>
-<hr>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-{% if produtos %}
-  <ul>
-    {% for produto in produtos %}
-      <li>
-        <strong>{{ produto.nome }}</strong> - R$ {{ "%.2f"|format(produto.preco) }}
-        <p>{{ produto.descricao }}</p>
-        <small>Cadastrado em {{ produto.data_cadastro.strftime('%d/%m/%Y %H:%M') }}</small>
-      </li>
-    {% endfor %}
-  </ul>
-{% else %}
-  <p>Nenhum produto cadastrado ainda.</p>
-{% endif %}
+<head>
+  <meta charset="UTF-8">
+  <title>Produtos</title>
+  {% include 'style.html' %}
+</head>
+
+<body>
+  <header>
+    <h1>Produtos</h1>
+  </header>
+  <nav>
+    <a href="{{ url_for('main.home') }}">Início</a>
+    <a href="{{ url_for('main.services') }}">Serviços</a>
+    <a href="{{ url_for('main.products') }}">Produtos</a>
+    <a href="{{ url_for('main.news') }}">Notícias</a>
+    <a href="{{ url_for('main.contact') }}">Contato</a>
+  </nav>
+  <div class="container">
+    <ul>
+      {% for produto in produtos %}
+      <li><strong>{{ produto.nome }}</strong> - {{ produto.descricao }} (R$ {{ produto.preco }})</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <footer>
+    <p>&copy; 2025 Felipe Welter</p>
+  </footer>
+</body>
+
+</html>

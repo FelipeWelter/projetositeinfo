@@ -1,24 +1,38 @@
-<h1>Adicionar Produto</h1>
-<a href="/">Início</a> | <a href="/products">Ver Produtos</a>
-<hr>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-<form method="POST">
-  {{ form.hidden_tag() }}
+<head>
+  <meta charset="UTF-8">
+  <title>Adicionar Produto</title>
+  {% include 'style.html' %}
+</head>
 
-  <p>
-    {{ form.nome.label }}<br>
-    {{ form.nome(size=50) }}
-  </p>
+<body>
+  <header>
+    <h1>Adicionar Produto</h1>
+  </header>
+  <nav>
+    <a href="{{ url_for('main.home') }}">Início</a>
+    <a href="{{ url_for('main.services') }}">Serviços</a>
+    <a href="{{ url_for('main.products') }}">Produtos</a>
+    <a href="{{ url_for('main.news') }}">Notícias</a>
+    <a href="{{ url_for('main.contact') }}">Contato</a>
+  </nav>
+  <div class="container">
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      {{ form.nome.label }}<br>
+      {{ form.nome(size=32) }}<br>
+      {{ form.descricao.label }}<br>
+      {{ form.descricao(rows=4) }}<br>
+      {{ form.preco.label }}<br>
+      {{ form.preco() }}<br>
+      {{ form.submit() }}
+    </form>
+  </div>
+  <footer>
+    <p>&copy; 2025 Felipe Welter</p>
+  </footer>
+</body>
 
-  <p>
-    {{ form.descricao.label }}<br>
-    {{ form.descricao(rows=4, cols=50) }}
-  </p>
-
-  <p>
-    {{ form.preco.label }}<br>
-    {{ form.preco(size=20) }}
-  </p>
-
-  <p>{{ form.submit() }}</p>
-</form>
+</html>

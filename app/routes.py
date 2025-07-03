@@ -9,6 +9,10 @@ main = Blueprint('main', __name__)
 def home():
     return render_template('index.html')
 
+@main.route('/admin')
+def admin():
+    return render_template('admin.html')
+
 @main.route('/services')
 def services():
     servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()

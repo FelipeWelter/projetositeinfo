@@ -3,26 +3,29 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Contato</title>
+    <title>Início - Site de Informática</title>
     {% include 'style.html' %}
 </head>
 
 <body>
     <header>
-        <h1>Contato</h1>
+        <h1>Bem-vindo ao meu site!</h1>
     </header>
     <nav>
         <a href="{{ url_for('main.home') }}">Início</a>
         <a href="{{ url_for('main.services') }}">Serviços</a>
+        <a href="{{ url_for('main.add_service' )}}">Adicionar Serviços</a>
         <a href="{{ url_for('main.products') }}">Produtos</a>
+        <a href="{{ url_for('main.add_product' )}}">Cadastrar Produtos</a>
         <a href="{{ url_for('main.news') }}">Notícias</a>
+        <a href="{{ url_for('main.add_news') }}">Adicionar Notícias</a>
         <a href="{{ url_for('main.contact') }}">Contato</a>
     </nav>
     <div class="container">
-        <p>Entre em contato pelo e-mail: <strong>feliwelter@gmail.com</strong></p>
+        <p>Esse site é feito com Flask!</p>
     </div>
     <footer>
-        <p>&copy; @2025 Felipe Welter</p>
+        <p>&copy; 2025 Felipe Welter</p>
     </footer>
 </body>
 

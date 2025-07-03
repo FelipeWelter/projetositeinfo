@@ -1,16 +1,36 @@
-<h1>Notícias</h1>
-<a href="/">Início</a> | <a href="/add-news">Nova Notícia</a>
-<hr>
+<!DOCTYPE html>
+<html lang="pt-br">
 
-{% if noticias %}
-  {% for noticia in noticias %}
+<head>
+  <meta charset="UTF-8">
+  <title>Notícias</title>
+  {% include 'style.html' %}
+</head>
+
+<body>
+  <header>
+    <h1>Notícias</h1>
+  </header>
+  <nav>
+    <a href="{{ url_for('main.home') }}">Início</a>
+    <a href="{{ url_for('main.services') }}">Serviços</a>
+    <a href="{{ url_for('main.products') }}">Produtos</a>
+    <a href="{{ url_for('main.news') }}">Notícias</a>
+    <a href="{{ url_for('main.contact') }}">Contato</a>
+  </nav>
+  <div class="container">
+    {% for noticia in noticias %}
     <article>
       <h2>{{ noticia.titulo }}</h2>
       <p><em>{{ noticia.resumo }}</em></p>
-      <small>Publicado em {{ noticia.data_publicacao.strftime('%d/%m/%Y %H:%M') }}</small>
+      <p>{{ noticia.conteudo }}</p>
       <hr>
     </article>
-  {% endfor %}
-{% else %}
-  <p>Nenhuma notícia publicada ainda.</p>
-{% endif %}
+    {% endfor %}
+  </div>
+  <footer>
+    <p>&copy; 2025 Felipe Welter</p>
+  </footer>
+</body>
+
+</html>
