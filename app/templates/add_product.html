@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="pt-br">
 
 <head>
@@ -19,7 +20,7 @@
     <a href="{{ url_for('main.contact') }}">Contato</a>
   </nav>
   <div class="container">
-    <form method="POST">
+    <form method="POST" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
       {{ form.nome.label }}<br>
       {{ form.nome(size=32) }}<br>
@@ -27,6 +28,8 @@
       {{ form.descricao(rows=4) }}<br>
       {{ form.preco.label }}<br>
       {{ form.preco() }}<br>
+      {{ form.imagem.label }}<br>
+      {{ form.imagem() }}<br>
       {{ form.submit() }}
     </form>
   </div>

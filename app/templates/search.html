@@ -1,0 +1,14 @@
+<!-- app/templates/search.html -->
+{% include 'style.html' %}
+<div class="container">
+    <h2>Resultados para "{{ termo }}"</h2>
+    {% if resultados %}
+    <ul>
+        {% for p in resultados %}
+        <li><strong>{{ p.nome }}</strong> - {{ p.descricao }}</li>
+        {% endfor %}
+    </ul>
+    {% else %}
+    <p>Nenhum resultado encontrado.</p>
+    {% endif %}
+</div>

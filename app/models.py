@@ -12,8 +12,9 @@ class Produto(db.Model):
     nome = db.Column(db.String(100), nullable=False)
     descricao = db.Column(db.Text, nullable=False)
     preco = db.Column(db.Float, nullable=False)
+    imagem = db.Column(db.String(120), nullable=True)  # caminho da imagem
     data_cadastro = db.Column(db.DateTime, default=datetime.utcnow)
-    
+
 class Noticia(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     titulo = db.Column(db.String(100), nullable=False)
