@@ -5,8 +5,59 @@ from werkzeug.utils import secure_filename
 from app.models import Produto, Servico, Noticia
 from app.forms import ProdutoForm, ServicoForm, NoticiaForm
 from . import db
+from flask import session, send_from_directory
+from app.forms import LoginForm
+from app.models import Admin
+from werkzeug.security import check_password_hash
+from app.models import ImagemProduto
+from flask_login import login_required
 
 main = Blueprint('main', __name__)
+
+def login_required(func):
+    from functools import wraps
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if 'admin_id' not in session:
+            return redirect(url_for('main.login'))
+        return func(*args, **kwargs)
+    return wrapper
+
+
+@main.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        admin = Admin.query.filter_by(usuario=form.usuario.data).first()
+        if admin and check_password_hash(admin.senha, form.senha.data):
+            session['admin_id'] = admin.id
+            flash('Login realizado com sucesso!', 'success')
+            return redirect(url_for('main.admin'))
+        flash('Usuário ou senha inválidos.', 'danger')
+    return render_template('login.html', form=form)
+
+@main.route('/logout')
+def logout():
+    session.clear()
+    flash('Você foi desconectado.', 'info')
+    return redirect(url_for('main.login'))
+
+@main.route('/admin')
+@login_required
+def admin():
+    if 'admin_id' not in session:
+        return redirect(url_for('main.login'))
+    
+    admin = Admin.query.get(session['admin_id'])
+    if not admin:
+        flash('Administrador não encontrado.', 'danger')
+        return redirect(url_for('main.login'))
+
+    produtos = Produto.query.order_by(Produto.data_cadastro.desc()).all()
+    servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
+    noticias = Noticia.query.order_by(Noticia.data_publicacao.desc()).all()
+
+    return render_template('admin.html', admin=admin, produtos=produtos, servicos=servicos, noticias=noticias)
 
 @main.route('/')
 def home():
@@ -16,16 +67,13 @@ def home():
 def about():
     return render_template('about.html')
 
-@main.route('/admin')
-def admin():
-    return render_template('admin.html')
-
 @main.route('/services')
 def services():
     servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
     return render_template('services.html', servicos=servicos)
 
 @main.route('/add-service', methods=['GET', 'POST'])
+@login_required
 def add_service():
     form = ServicoForm()
     if form.validate_on_submit():
@@ -42,45 +90,65 @@ def products():
     return render_template('products.html', produtos=produtos)
 
 @main.route('/add-product', methods=['GET', 'POST'])
+@login_required
 def add_product():
     form = ProdutoForm()
     if form.validate_on_submit():
-        filename = None
-        if form.imagem.data:
-            filename = secure_filename(form.imagem.data.filename)
-            caminho = os.path.join(current_app.root_path, 'static/uploads', filename)
-            form.imagem.data.save(caminho)
         produto = Produto(
             nome=form.nome.data,
             descricao=form.descricao.data,
-            preco=float(form.preco.data),
-            imagem=filename
+            preco=float(form.preco.data)
         )
         db.session.add(produto)
+        db.session.flush()  # para pegar produto.id antes do commit
+
+        # Salva as imagens (se houver)
+        for imagem in form.imagens.data:
+            if imagem and imagem.filename:
+                filename = secure_filename(imagem.filename)
+                caminho = os.path.join(current_app.root_path, 'static/uploads', filename)
+                imagem.save(caminho)
+
+                nova_imagem = ImagemProduto(nome_arquivo=filename, produto_id=produto.id)
+                db.session.add(nova_imagem)
+
         db.session.commit()
         flash('Produto cadastrado com sucesso!', 'success')
         return redirect(url_for('main.products'))
+
     return render_template('add_product.html', form=form)
 
+
 @main.route('/edit-product/<int:id>', methods=['GET', 'POST'])
+@login_required
 def edit_product(id):
     produto = Produto.query.get_or_404(id)
     form = ProdutoForm(obj=produto)
+
     if form.validate_on_submit():
         produto.nome = form.nome.data
         produto.descricao = form.descricao.data
         produto.preco = float(form.preco.data)
-        if form.imagem.data:
-            filename = secure_filename(form.imagem.data.filename)
-            caminho = os.path.join(current_app.root_path, 'static/uploads', filename)
-            form.imagem.data.save(caminho)
-            produto.imagem = filename
+
+        # Adiciona novas imagens, se houver
+        for imagem in form.imagens.data:
+            if imagem and imagem.filename:
+                filename = secure_filename(imagem.filename)
+                caminho = os.path.join(current_app.root_path, 'static/uploads', filename)
+                imagem.save(caminho)
+
+                nova_imagem = ImagemProduto(nome_arquivo=filename, produto_id=produto.id)
+                db.session.add(nova_imagem)
+
         db.session.commit()
         flash('Produto atualizado com sucesso!', 'success')
         return redirect(url_for('main.products'))
-    return render_template('add_product.html', form=form)
+
+    return render_template('add_product.html', form=form, produto=produto)
+
 
 @main.route('/delete-product/<int:id>')
+@login_required
 def delete_product(id):
     produto = Produto.query.get_or_404(id)
     db.session.delete(produto)
@@ -95,6 +163,7 @@ def news():
     return render_template('news.html', noticias=noticias)
 
 @main.route('/add-news', methods=['GET', 'POST'])
+@login_required
 def add_news():
     form = NoticiaForm()
     if form.validate_on_submit():

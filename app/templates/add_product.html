@@ -1,38 +1,59 @@
 <!DOCTYPE html>
-
 <html lang="pt-br">
 
 <head>
   <meta charset="UTF-8">
-  <title>Adicionar Produto</title>
+  <title>Cadastrar Produto</title>
   {% include 'style.html' %}
 </head>
 
 <body>
   <header>
-    <h1>Adicionar Produto</h1>
+    <h1>Cadastrar Produto</h1>
   </header>
+
   <nav>
     <a href="{{ url_for('main.home') }}">Início</a>
     <a href="{{ url_for('main.services') }}">Serviços</a>
     <a href="{{ url_for('main.products') }}">Produtos</a>
     <a href="{{ url_for('main.news') }}">Notícias</a>
     <a href="{{ url_for('main.contact') }}">Contato</a>
+    {% if session.get('admin_logado') %}
+      <a href="{{ url_for('auth.logout') }}">Sair</a>
+    {% endif %}
   </nav>
+
   <div class="container">
     <form method="POST" enctype="multipart/form-data">
       {{ form.hidden_tag() }}
-      {{ form.nome.label }}<br>
-      {{ form.nome(size=32) }}<br>
-      {{ form.descricao.label }}<br>
-      {{ form.descricao(rows=4) }}<br>
-      {{ form.preco.label }}<br>
-      {{ form.preco() }}<br>
-      {{ form.imagem.label }}<br>
-      {{ form.imagem() }}<br>
-      {{ form.submit() }}
+
+      <div>
+        {{ form.nome.label }}<br>
+        {{ form.nome(size=40) }}
+      </div>
+
+      <div>
+        {{ form.descricao.label }}<br>
+        {{ form.descricao(rows=5, cols=40) }}
+      </div>
+
+      <div>
+        {{ form.preco.label }}<br>
+        {{ form.preco(step="0.01") }}
+      </div>
+
+      <div>
+        <label for="imagens">Imagens do Produto:</label><br>
+        {{ form.imagens(class_="form-control", multiple=True) }}
+        <small>Você pode selecionar várias imagens (JPG, JPEG, PNG).</small>
+      </div>
+
+      <div>
+        {{ form.submit(class_="btn btn-primary") }}
+      </div>
     </form>
   </div>
+
   <footer>
     <p>&copy; 2025 Felipe Welter</p>
   </footer>

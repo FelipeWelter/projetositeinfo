@@ -1,8 +1,14 @@
 from flask_wtf import FlaskForm
-from flask_wtf.file import FileField, FileAllowed
-from wtforms import StringField, TextAreaField, SubmitField
-from wtforms.validators import DataRequired, Length
+from wtforms import StringField, TextAreaField, DecimalField, SubmitField, PasswordField, MultipleFileField
+from wtforms.validators import DataRequired, Length, NumberRange
+from flask_wtf.file import FileAllowed, FileField
 
+
+
+class LoginForm(FlaskForm):
+    usuario = StringField('Usuário', validators=[DataRequired(), Length(max=50)])
+    senha = PasswordField('Senha', validators=[DataRequired(), Length(min=6, max=100)])
+    submit = SubmitField('Entrar')
 
 class ServicoForm(FlaskForm):
     titulo = StringField('Título', validators=[DataRequired(), Length(max=100)])
@@ -12,9 +18,13 @@ class ServicoForm(FlaskForm):
 class ProdutoForm(FlaskForm):
     nome = StringField('Nome', validators=[DataRequired()])
     descricao = TextAreaField('Descrição', validators=[DataRequired()])
-    preco = StringField('Preço', validators=[DataRequired()])
-    imagem = FileField('Imagem do Produto', validators=[FileAllowed(['jpg', 'png', 'jpeg'], 'Apenas imagens são permitidas')])
-    submit = SubmitField('Cadastrar Produto')
+    preco = DecimalField('Preço', validators=[DataRequired(), NumberRange(min=0)])
+    
+    imagens = MultipleFileField('Imagens', validators=[
+        FileAllowed(['jpg', 'jpeg', 'png', 'gif'], 'Apenas arquivos de imagem são permitidos.')
+    ])
+    
+    submit = SubmitField('Cadastrar')
 
 class NoticiaForm(FlaskForm):
     titulo = StringField('Título', validators=[DataRequired(), Length(max=100)])

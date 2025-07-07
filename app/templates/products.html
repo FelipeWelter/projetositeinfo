@@ -42,6 +42,18 @@
       font-weight: bold;
       cursor: pointer;
     }
+
+    .galeria {
+      margin-top: 5px;
+    }
+
+    .galeria img {
+      margin: 5px;
+      width: 100px;
+      height: auto;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
   </style>
 </head>
 
@@ -49,34 +61,45 @@
   <header>
     <h1>Produtos</h1>
   </header>
+
   <nav>
     <a href="{{ url_for('main.home') }}">Início</a>
     <a href="{{ url_for('main.services') }}">Serviços</a>
     <a href="{{ url_for('main.products') }}">Produtos</a>
     <a href="{{ url_for('main.news') }}">Notícias</a>
     <a href="{{ url_for('main.contact') }}">Contato</a>
+    {% if session.get('admin_logado') %}
+      <a href="{{ url_for('auth.logout') }}">Sair</a>
+    {% endif %}
   </nav>
+
   <div class="container">
     <ul>
       {% for produto in produtos %}
-      <li>
-        <strong>{{ produto.nome }}</strong> - {{ produto.descricao }} (R$ {{ produto.preco }})
-        {% if produto.imagem %}
-        <div>
-          <img class="produto-img" src="{{ url_for('static', filename='uploads/' + produto.imagem) }}"
-            alt="{{ produto.nome }}" width="150"
-            onclick="openModal('{{ url_for('static', filename='uploads/' + produto.imagem) }}')">
-        </div>
-        {% endif %}
-        <div>
-          <a href="{{ url_for('main.edit_product', id=produto.id) }}">Editar</a> |
-          <a href="{{ url_for('main.delete_product', id=produto.id) }}"
-            onclick="return confirm('Deseja excluir este produto?')">Remover</a>
-        </div>
-      </li>
+        <li>
+          <strong>{{ produto.nome }}</strong> - {{ produto.descricao }} (R$ {{ produto.preco }})
+
+          <div class="galeria">
+            {% for imagem in produto.imagens %}
+              <img class="produto-img"
+                   src="{{ url_for('static', filename='uploads/' + imagem.nome_arquivo) }}"
+                   onclick="openModal('{{ url_for('static', filename='uploads/' + imagem.nome_arquivo) }}')"
+                   alt="{{ produto.nome }}">
+            {% endfor %}
+          </div>
+
+          {% if session.get('admin_logado') %}
+            <div>
+              <a href="{{ url_for('main.edit_product', id=produto.id) }}">Editar</a> |
+              <a href="{{ url_for('main.delete_product', id=produto.id) }}"
+                 onclick="return confirm('Deseja excluir este produto?')">Remover</a>
+            </div>
+          {% endif %}
+        </li>
       {% endfor %}
     </ul>
   </div>
+
   <footer>
     <p>&copy; 2025 Felipe Welter</p>
   </footer>
@@ -85,6 +108,7 @@
     <span class="close" onclick="closeModal()">&times;</span>
     <img class="modal-content" id="modalImage">
   </div>
+
   <script>
     function openModal(src) {
       var modal = document.getElementById("imgModal");
@@ -92,6 +116,7 @@
       modal.style.display = "block";
       modalImg.src = src;
     }
+
     function closeModal() {
       document.getElementById("imgModal").style.display = "none";
     }
