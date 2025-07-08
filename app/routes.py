@@ -193,3 +193,52 @@ def buscar():
     termo = request.args.get('q', '')
     resultados = Produto.query.filter(Produto.nome.ilike(f'%{termo}%')).all()
     return render_template('search.html', termo=termo, resultados=resultados)
+
+@main.route('/admin/produtos')
+@login_required
+def admin_produtos():
+    produtos = Produto.query.all()
+    return render_template('admin_produtos.html', produtos=produtos)
+
+@main.route('/admin/servicos')
+@login_required
+def admin_servicos():
+    servicos = Servico.query.all()
+    return render_template('admin_servicos.html', servicos=servicos)
+
+@main.route('/admin/noticias')
+@login_required
+def admin_noticias():
+    noticias = Noticia.query.all()
+    return render_template('admin_noticias.html', noticias=noticias)
+
+@main.route('/admin/usuarios', methods=['GET'])
+@login_required
+def admin_usuarios():
+    from app.models import Admin
+    admins = Admin.query.all()
+    return render_template('admin_usuarios.html', admins=admins)
+
+@main.route('/admin/usuarios/add', methods=['POST'])
+@login_required
+def add_admin():
+    from app.models import Admin
+    from werkzeug.security import generate_password_hash
+    usuario = request.form['usuario']
+    senha = request.form['senha']
+    novo = Admin(usuario=usuario, senha=generate_password_hash(senha))
+    db.session.add(novo)
+    db.session.commit()
+    flash('Administrador criado!', 'success')
+    return redirect(url_for('main.admin_usuarios'))
+
+@main.route('/admin/usuarios/delete/<int:id>')
+@login_required
+def delete_admin(id):
+    from app.models import Admin
+    admin = Admin.query.get_or_404(id)
+    db.session.delete(admin)
+    db.session.commit()
+    flash('Administrador removido!', 'info')
+    return redirect(url_for('main.admin_usuarios'))
+

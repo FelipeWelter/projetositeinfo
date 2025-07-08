@@ -3,23 +3,64 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Início - Site de Informática vai dormir</title>
+  <title>Painel do Administrador</title>
   {% include 'style.html' %}
+  <style>
+    .admin-panel {
+      max-width: 800px;
+      margin: 30px auto;
+      padding: 20px;
+      background-color: #f9f9f9;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .admin-panel h1 {
+      text-align: center;
+    }
+
+    .admin-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-top: 30px;
+    }
+
+    .admin-links a {
+      padding: 12px 18px;
+      background-color: #007BFF;
+      color: white;
+      text-decoration: none;
+      border-radius: 6px;
+      transition: background-color 0.2s ease;
+    }
+
+    .admin-links a:hover {
+      background-color: #0056b3;
+    }
+  </style>
 </head>
 
 <body>
-  <header>
-    <h1>Bem-vindo!</h1>
-  </header>
-  <nav>
- 
-  </nav>
-  <div class="container">
-    <p>Seja bem Bem-vindo</p>
+  <div class="admin-panel">
+    <h1>Painel do Administrador</h1>
+
+    <div class="admin-links">
+      <a href="{{ url_for('main.add_product') }}">Adicionar Produto</a>
+      <a href="{{ url_for('main.products') }}">Gerenciar Produtos</a>
+
+      <a href="{{ url_for('main.add_service') }}">Adicionar Serviço</a>
+      <a href="{{ url_for('main.services') }}">Gerenciar Serviços</a>
+
+      <a href="{{ url_for('main.add_news') }}">Publicar Notícia</a>
+      <a href="{{ url_for('main.news') }}">Gerenciar Notícias</a>
+
+      <a href="{{ url_for('main.contact') }}">Mensagens de Contato</a>
+
+      <a href="{{ url_for('main.logout') }}">Sair</a>
+    </div>
   </div>
-  <footer>
-    <p>&copy; 2025 Felipe Welter</p>
-  </footer>
 </body>
 
 </html>
