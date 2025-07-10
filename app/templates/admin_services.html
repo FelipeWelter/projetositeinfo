@@ -1,1 +1,33 @@
-<h1>Gerenciar Serviços</h1>
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Serviços</title>
+    {% include 'style.html' %}
+</head>
+
+<body>
+    <header>
+        <h1>Serviços</h1>
+    </header>
+    <nav>
+        <a href="{{ url_for('main.home') }}">Início</a>
+        <a href="{{ url_for('main.services') }}">Serviços</a>
+        <a href="{{ url_for('main.products') }}">Produtos</a>
+        <a href="{{ url_for('main.news') }}">Notícias</a>
+        <a href="{{ url_for('main.contact') }}">Contato</a>
+    </nav>
+    <div class="container">
+        <ul>
+            {% for servico in servicos %}
+            <li><strong>{{ servico.titulo }}</strong>: {{ servico.descricao }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+    <footer>
+        <p>&copy; 2025 Felipe Welter</p>
+    </footer>
+</body>
+
+</html>

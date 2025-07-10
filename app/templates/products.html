@@ -69,33 +69,24 @@
     <a href="{{ url_for('main.news') }}">Notícias</a>
     <a href="{{ url_for('main.contact') }}">Contato</a>
     {% if session.get('admin_logado') %}
-      <a href="{{ url_for('auth.logout') }}">Sair</a>
+    <a href="{{ url_for('auth.logout') }}">Sair</a>
     {% endif %}
   </nav>
 
   <div class="container">
     <ul>
       {% for produto in produtos %}
-        <li>
-          <strong>{{ produto.nome }}</strong> - {{ produto.descricao }} (R$ {{ produto.preco }})
+      <li>
+        <strong>{{ produto.nome }}</strong> - {{ produto.descricao }} (R$ {{ produto.preco }})
 
-          <div class="galeria">
-            {% for imagem in produto.imagens %}
-              <img class="produto-img"
-                   src="{{ url_for('static', filename='uploads/' + imagem.nome_arquivo) }}"
-                   onclick="openModal('{{ url_for('static', filename='uploads/' + imagem.nome_arquivo) }}')"
-                   alt="{{ produto.nome }}">
-            {% endfor %}
-          </div>
-
-          {% if session.get('admin_logado') %}
-            <div>
-              <a href="{{ url_for('main.edit_product', id=produto.id) }}">Editar</a> |
-              <a href="{{ url_for('main.delete_product', id=produto.id) }}"
-                 onclick="return confirm('Deseja excluir este produto?')">Remover</a>
-            </div>
-          {% endif %}
-        </li>
+        <div class="galeria">
+          {% for imagem in produto.imagens %}
+          <img class="produto-img" src="{{ url_for('static', filename='uploads/' + imagem.nome_arquivo) }}"
+            onclick="openModal('{{ url_for('static', filename='uploads/' + imagem.nome_arquivo) }}')"
+            alt="{{ produto.nome }}">
+          {% endfor %}
+        </div>
+      </li>
       {% endfor %}
     </ul>
   </div>

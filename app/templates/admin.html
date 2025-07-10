@@ -12,7 +12,7 @@
       padding: 20px;
       background-color: #f9f9f9;
       border-radius: 12px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     }
 
     .admin-panel h1 {
@@ -48,10 +48,10 @@
 
     <div class="admin-links">
       <a href="{{ url_for('main.add_product') }}">Adicionar Produto</a>
-      <a href="{{ url_for('main.products') }}">Gerenciar Produtos</a>
+      <a href="{{ url_for('main.admin_products') }}">Gerenciar Produtos</a>
 
       <a href="{{ url_for('main.add_service') }}">Adicionar Serviço</a>
-      <a href="{{ url_for('main.services') }}">Gerenciar Serviços</a>
+      <a href="{{ url_for('main.admin_services') }}">Gerenciar Serviços</a>
 
       <a href="{{ url_for('main.add_news') }}">Publicar Notícia</a>
       <a href="{{ url_for('main.news') }}">Gerenciar Notícias</a>

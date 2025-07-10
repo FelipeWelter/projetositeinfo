@@ -31,7 +31,6 @@ def login():
         admin = Admin.query.filter_by(usuario=form.usuario.data).first()
         if admin and check_password_hash(admin.senha, form.senha.data):
             session['admin_id'] = admin.id
-            flash('Login realizado com sucesso!', 'success')
             return redirect(url_for('main.admin'))
         flash('Usuário ou senha inválidos.', 'danger')
     return render_template('login.html', form=form)
@@ -67,6 +66,12 @@ def home():
 def about():
     return render_template('about.html')
 
+@main.route('/admin-services')
+@login_required
+def admin_services():
+    servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
+    return render_template('admin_services.html', servicos=servicos)
+
 @main.route('/services')
 def services():
     servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
@@ -80,14 +85,26 @@ def add_service():
         novo = Servico(titulo=form.titulo.data, descricao=form.descricao.data)
         db.session.add(novo)
         db.session.commit()
-        flash('Serviço cadastrado com sucesso!', 'success')
-        return redirect(url_for('main.services'))
+        return redirect(url_for('main.admin'))
     return render_template('add_service.html', form=form)
+
+
+
+
+
+
+
 
 @main.route('/products')
 def products():
     produtos = Produto.query.order_by(Produto.data_cadastro.desc()).all()
     return render_template('products.html', produtos=produtos)
+
+@main.route('/admin-products')
+@login_required
+def admin_products():
+    produtos = Produto.query.order_by(Produto.data_cadastro.desc()).all()
+    return render_template('admin_products.html', produtos=produtos)
 
 @main.route('/add-product', methods=['GET', 'POST'])
 @login_required
@@ -111,12 +128,10 @@ def add_product():
 
                 nova_imagem = ImagemProduto(nome_arquivo=filename, produto_id=produto.id)
                 db.session.add(nova_imagem)
-
         db.session.commit()
-        flash('Produto cadastrado com sucesso!', 'success')
-        return redirect(url_for('main.products'))
-
+        return redirect(url_for('main.admin'))
     return render_template('add_product.html', form=form)
+
 
 
 @main.route('/edit-product/<int:id>', methods=['GET', 'POST'])
@@ -141,8 +156,7 @@ def edit_product(id):
                 db.session.add(nova_imagem)
 
         db.session.commit()
-        flash('Produto atualizado com sucesso!', 'success')
-        return redirect(url_for('main.products'))
+        return redirect(url_for('main.admin_products'))
 
     return render_template('add_product.html', form=form, produto=produto)
 
@@ -153,8 +167,7 @@ def delete_product(id):
     produto = Produto.query.get_or_404(id)
     db.session.delete(produto)
     db.session.commit()
-    flash('Produto removido com sucesso!', 'success')
-    return redirect(url_for('main.products'))
+    return redirect(url_for('main.admin_products'))
 
 @main.route('/news')
 def news():
@@ -174,7 +187,6 @@ def add_news():
         )
         db.session.add(noticia)
         db.session.commit()
-        flash('Notícia publicada com sucesso!', 'success')
         return redirect(url_for('main.news'))
     return render_template('add_news.html', form=form)
 
@@ -184,7 +196,6 @@ def contact():
         nome = request.form['nome']
         mensagem = request.form['mensagem']
         print(f'Nova mensagem de {nome}: {mensagem}')
-        flash('Mensagem enviada com sucesso!', 'success')
         return redirect(url_for('main.contact'))
     return render_template('contact.html')
 
@@ -193,52 +204,4 @@ def buscar():
     termo = request.args.get('q', '')
     resultados = Produto.query.filter(Produto.nome.ilike(f'%{termo}%')).all()
     return render_template('search.html', termo=termo, resultados=resultados)
-
-@main.route('/admin/produtos')
-@login_required
-def admin_produtos():
-    produtos = Produto.query.all()
-    return render_template('admin_produtos.html', produtos=produtos)
-
-@main.route('/admin/servicos')
-@login_required
-def admin_servicos():
-    servicos = Servico.query.all()
-    return render_template('admin_servicos.html', servicos=servicos)
-
-@main.route('/admin/noticias')
-@login_required
-def admin_noticias():
-    noticias = Noticia.query.all()
-    return render_template('admin_noticias.html', noticias=noticias)
-
-@main.route('/admin/usuarios', methods=['GET'])
-@login_required
-def admin_usuarios():
-    from app.models import Admin
-    admins = Admin.query.all()
-    return render_template('admin_usuarios.html', admins=admins)
-
-@main.route('/admin/usuarios/add', methods=['POST'])
-@login_required
-def add_admin():
-    from app.models import Admin
-    from werkzeug.security import generate_password_hash
-    usuario = request.form['usuario']
-    senha = request.form['senha']
-    novo = Admin(usuario=usuario, senha=generate_password_hash(senha))
-    db.session.add(novo)
-    db.session.commit()
-    flash('Administrador criado!', 'success')
-    return redirect(url_for('main.admin_usuarios'))
-
-@main.route('/admin/usuarios/delete/<int:id>')
-@login_required
-def delete_admin(id):
-    from app.models import Admin
-    admin = Admin.query.get_or_404(id)
-    db.session.delete(admin)
-    db.session.commit()
-    flash('Administrador removido!', 'info')
-    return redirect(url_for('main.admin_usuarios'))
 
