@@ -155,7 +155,9 @@
         <a href="{{ url_for('main.products') }}">Produtos</a>
         <a href="{{ url_for('main.news') }}">Notícias</a>
         <a href="{{ url_for('main.contact') }}">Contato</a>
-        <a href="{{ url_for('main.admin') }}">Admin</a>
+        {% if session.get('admin_id') %}
+        <a href="{{ url_for('main.admin') }}" class="btn btn-secondary">Voltar para Admin</a>
+        {% endif %}
     </nav>
 
     <div class="container">

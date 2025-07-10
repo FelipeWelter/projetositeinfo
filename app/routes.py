@@ -1,6 +1,6 @@
 import os
 import feedparser
-from flask import current_app, Blueprint, render_template, redirect, url_for, flash, request
+from flask import current_app, Blueprint, render_template, redirect, url_for, flash, request, session
 from werkzeug.utils import secure_filename
 from app.models import Produto, Servico, Noticia
 from app.forms import ProdutoForm, ServicoForm, NoticiaForm
@@ -11,8 +11,12 @@ from app.models import Admin
 from werkzeug.security import check_password_hash
 from app.models import ImagemProduto
 from flask_login import login_required
+from functools import wraps
 
+# Importando o Blueprint para as rotas principais
 main = Blueprint('main', __name__)
+
+# Decorador para verificar se o usuário está logado
 
 def login_required(func):
     from functools import wraps
@@ -23,6 +27,7 @@ def login_required(func):
         return func(*args, **kwargs)
     return wrapper
 
+# Rota para login
 
 @main.route('/login', methods=['GET', 'POST'])
 def login():
@@ -32,14 +37,21 @@ def login():
         if admin and check_password_hash(admin.senha, form.senha.data):
             session['admin_id'] = admin.id
             return redirect(url_for('main.admin'))
-        flash('Usuário ou senha inválidos.', 'danger')
+            flash('Login realizado com sucesso!', 'success')
+        else:
+            flash('Usuário ou senha inválidos.', 'danger')
     return render_template('login.html', form=form)
 
+# Rota para logout
+
 @main.route('/logout')
+@login_required
 def logout():
     session.clear()
     flash('Você foi desconectado.', 'info')
     return redirect(url_for('main.login'))
+
+# Rota para a página de administração
 
 @main.route('/admin')
 @login_required
@@ -58,6 +70,8 @@ def admin():
 
     return render_template('admin.html', admin=admin, produtos=produtos, servicos=servicos, noticias=noticias)
 
+#######################################################
+
 @main.route('/')
 def home():
     return render_template('index.html')
@@ -66,16 +80,22 @@ def home():
 def about():
     return render_template('about.html')
 
+#aba admin services
+
 @main.route('/admin-services')
 @login_required
 def admin_services():
     servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
     return render_template('admin_services.html', servicos=servicos)
 
+#ver serviços
+
 @main.route('/services')
 def services():
     servicos = Servico.query.order_by(Servico.data_criacao.desc()).all()
     return render_template('services.html', servicos=servicos)
+
+#adicionar serviço
 
 @main.route('/add-service', methods=['GET', 'POST'])
 @login_required
@@ -87,6 +107,9 @@ def add_service():
         db.session.commit()
         return redirect(url_for('main.admin'))
     return render_template('add_service.html', form=form)
+
+#editar serviço
+
 @main.route('/edit-service/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_service(id):
@@ -100,6 +123,8 @@ def edit_service(id):
         return redirect(url_for('main.admin_services'))
     return render_template('add_service.html', form=form)
 
+#deletar serviço
+
 @main.route('/delete-service/<int:id>')
 @login_required
 def delete_service(id):
@@ -109,16 +134,22 @@ def delete_service(id):
     flash('Serviço removido com sucesso!', 'success')
     return redirect(url_for('main.admin_services'))
 
+#ver produtos
+
 @main.route('/products')
 def products():
     produtos = Produto.query.order_by(Produto.data_cadastro.desc()).all()
     return render_template('products.html', produtos=produtos)
+
+#admin products
 
 @main.route('/admin-products')
 @login_required
 def admin_products():
     produtos = Produto.query.order_by(Produto.data_cadastro.desc()).all()
     return render_template('admin_products.html', produtos=produtos)
+
+#adicionar produto
 
 @main.route('/add-product', methods=['GET', 'POST'])
 @login_required
@@ -146,6 +177,8 @@ def add_product():
         return redirect(url_for('main.admin'))
     return render_template('add_product.html', form=form)
 
+#editar produto
+
 @main.route('/edit-product/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_product(id):
@@ -172,6 +205,8 @@ def edit_product(id):
 
     return render_template('add_product.html', form=form, produto=produto)
 
+#deletar produto
+
 @main.route('/delete-product/<int:id>')
 @login_required
 def delete_product(id):
@@ -180,11 +215,15 @@ def delete_product(id):
     db.session.commit()
     return redirect(url_for('main.admin_products'))
 
+#ver noticias
+
 @main.route('/news')
 def news():
     feed = feedparser.parse('https://www.tecmundo.com.br/rss')
     noticias = feed.entries[:5]
     return render_template('news.html', noticias=noticias)
+
+#adicionar noticia
 
 @main.route('/add-news', methods=['GET', 'POST'])
 @login_required
@@ -201,6 +240,8 @@ def add_news():
         return redirect(url_for('main.news'))
     return render_template('add_news.html', form=form)
 
+#contato
+
 @main.route('/contact', methods=['GET', 'POST'])
 def contact():
     if request.method == 'POST':
@@ -209,6 +250,8 @@ def contact():
         print(f'Nova mensagem de {nome}: {mensagem}')
         return redirect(url_for('main.contact'))
     return render_template('contact.html')
+
+#buscar produtos por termo
 
 @main.route('/buscar', methods=['GET'])
 def buscar():
