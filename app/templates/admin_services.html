@@ -5,26 +5,120 @@
     <meta charset="UTF-8">
     <title>Serviços</title>
     {% include 'style.html' %}
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 20px 0;
+            text-align: center;
+        }
+
+        nav {
+            background-color: #555;
+            padding: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        nav a {
+            color: #fff;
+            margin: 5px 15px;
+            text-decoration: none;
+            font-weight: bold;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .servico-card {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-left: 6px solid #007bff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+        }
+
+        .servico-card h3 {
+            margin-top: 0;
+            color: #333;
+        }
+
+        .servico-card p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .servico-actions a {
+            margin-right: 10px;
+            text-decoration: none;
+            color: white;
+            background-color: #007bff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .servico-actions a:hover {
+            background-color: #0056b3;
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px 0;
+            margin-top: 30px;
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
 </head>
 
 <body>
     <header>
         <h1>Serviços</h1>
     </header>
+
     <nav>
         <a href="{{ url_for('main.home') }}">Início</a>
         <a href="{{ url_for('main.services') }}">Serviços</a>
         <a href="{{ url_for('main.products') }}">Produtos</a>
         <a href="{{ url_for('main.news') }}">Notícias</a>
         <a href="{{ url_for('main.contact') }}">Contato</a>
+        <a href="{{ url_for('main.admin') }}" class="btn btn-secondary">Admin</a>
     </nav>
+
     <div class="container">
-        <ul>
-            {% for servico in servicos %}
-            <li><strong>{{ servico.titulo }}</strong>: {{ servico.descricao }}</li>
-            {% endfor %}
-        </ul>
+        {% for servico in servicos %}
+        <div class="servico-card">
+            <h3>{{ servico.titulo }}</h3>
+            <p>{{ servico.descricao }}</p>
+
+            {% if session.get('admin_id') %}
+            <div class="servico-actions">
+                <a href="{{ url_for('main.edit_service', id=servico.id) }}">Editar</a>
+                <a href="{{ url_for('main.delete_service', id=servico.id) }}"
+                    onclick="return confirm('Deseja excluir este serviço?')">Remover</a>
+            </div>
+            {% endif %}
+        </div>
+        {% endfor %}
     </div>
+
     <footer>
         <p>&copy; 2025 Felipe Welter</p>
     </footer>

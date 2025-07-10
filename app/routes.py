@@ -87,13 +87,27 @@ def add_service():
         db.session.commit()
         return redirect(url_for('main.admin'))
     return render_template('add_service.html', form=form)
+@main.route('/edit-service/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_service(id):
+    servico = Servico.query.get_or_404(id)
+    form = ServicoForm(obj=servico)
+    if form.validate_on_submit():
+        servico.titulo = form.titulo.data
+        servico.descricao = form.descricao.data
+        db.session.commit()
+        flash('Serviço atualizado com sucesso!', 'success')
+        return redirect(url_for('main.admin_services'))
+    return render_template('add_service.html', form=form)
 
-
-
-
-
-
-
+@main.route('/delete-service/<int:id>')
+@login_required
+def delete_service(id):
+    servico = Servico.query.get_or_404(id)
+    db.session.delete(servico)
+    db.session.commit()
+    flash('Serviço removido com sucesso!', 'success')
+    return redirect(url_for('main.admin_services'))
 
 @main.route('/products')
 def products():
@@ -132,8 +146,6 @@ def add_product():
         return redirect(url_for('main.admin'))
     return render_template('add_product.html', form=form)
 
-
-
 @main.route('/edit-product/<int:id>', methods=['GET', 'POST'])
 @login_required
 def edit_product(id):
@@ -159,7 +171,6 @@ def edit_product(id):
         return redirect(url_for('main.admin_products'))
 
     return render_template('add_product.html', form=form, produto=produto)
-
 
 @main.route('/delete-product/<int:id>')
 @login_required
